@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.0.0
+// OpenURLs         v.1.1.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -52,7 +52,7 @@ namespace AyahaTools.OpenURLs
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     EditorGUILayout.LabelField("Version");
-                    EditorGUILayout.LabelField("Version 1.0.0");
+                    EditorGUILayout.LabelField("Version 1.1.0");
                 }
 
                 using (new EditorGUILayout.HorizontalScope())
@@ -60,7 +60,7 @@ namespace AyahaTools.OpenURLs
                     EditorGUILayout.LabelField("How to use (Japanese)");
                     if(GUILayout.Button("How to use (Japanese)"))
                     {
-                        // System.Diagnostics.Process.Start("**");
+                        System.Diagnostics.Process.Start("https://github.com/ayaha401/OpenURLs");
                     }
                 }
             }
@@ -135,6 +135,7 @@ namespace AyahaTools.OpenURLs
 
         void OnDestroy()
         {
+            if(_makeURLAsset == null) return; 
             if(_makeURLAsset.isOpen == true)
             {
                 _makeURLAsset.CloseWindow();
