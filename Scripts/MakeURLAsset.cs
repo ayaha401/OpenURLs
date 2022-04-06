@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.1.1
+// OpenURLs         v.1.2.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -23,10 +23,14 @@ namespace AyahaTools.OpenURLs
 
         public bool isOpen = false;
 
-        public void OpenWindow()
+        private Vector2 _startWindowSize = new Vector2(400.0f,180.0f);
+
+        void OnEnable()
         {
             isOpen = true;
-            EditorWindow.GetWindow<MakeURLAsset>();
+            Rect currentPosition = position;
+            currentPosition.size = _startWindowSize;
+            position = currentPosition;
         }
 
         void OnGUI()

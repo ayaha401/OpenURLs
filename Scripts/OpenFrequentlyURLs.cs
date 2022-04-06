@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.1.1
+// OpenURLs         v.1.2.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -17,6 +17,8 @@ namespace AyahaTools.OpenURLs
 {
     public class OpenFrequentlyURLs : EditorWindow
     {
+        private string _version = "1.2.0";
+
         private MakeURLAsset _makeURLAsset= null;
         [SerializeField] private OpenFrequentlyURLsSaveData _data = null;
         [SerializeField] private List<URL_SObj> _URLs = new List<URL_SObj>();
@@ -26,8 +28,8 @@ namespace AyahaTools.OpenURLs
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Vector2 _deleteButtonSize = new Vector2(18.0f,18.0f);
+        private Vector2 _startWindowSize = new Vector2(430.0f,530.0f);
 
-        private string _version = "1.1.1";
 
         [MenuItem("AyahaTools/OpenURLs")]
         private static void OpenWindow()
@@ -39,6 +41,10 @@ namespace AyahaTools.OpenURLs
         {
             so = new SerializedObject(this);
             _URLsProp = so.FindProperty("_URLs");
+
+            Rect currentPosition = position;
+            currentPosition.size = _startWindowSize;
+            position = currentPosition;
         }
 
         void SoInit()
@@ -47,7 +53,14 @@ namespace AyahaTools.OpenURLs
             _URLsProp = so.FindProperty("_URLs");
         }
 
-        void OnGUI()
+        private void GUIPartition()
+        {
+            GUI.color = Color.gray;
+            GUILayout.Box("", GUILayout.Height(2), GUILayout.ExpandWidth(true));
+            GUI.color = Color.white;
+        }
+        
+        private void Information()
         {
             using (new EditorGUILayout.VerticalScope())
             {
@@ -66,44 +79,11 @@ namespace AyahaTools.OpenURLs
                     }
                 }
             }
+        }
 
-            GUI.color = Color.gray;
-            GUILayout.Box("", GUILayout.Height(2), GUILayout.ExpandWidth(true));
-            GUI.color = Color.white;
-
-            if(GUILayout.Button("URLアセットを作成"))
-            {
-                _makeURLAsset = ScriptableObject.CreateInstance<MakeURLAsset>();
-                _makeURLAsset.OpenWindow();
-            }
-
-            GUI.color = Color.gray;
-            GUILayout.Box("", GUILayout.Height(2), GUILayout.ExpandWidth(true));
-            GUI.color = Color.white;
-
-            using (new EditorGUILayout.VerticalScope("box"))
-            {
-                if(_data == null) _data = LoadData();
-                _URLs = _data._URLs;
-
-                EditorGUI.BeginChangeCheck();
-
-                SoInit();
-                EditorGUILayout.PropertyField(_URLsProp,true);
-
-                if(EditorGUI.EndChangeCheck())
-                {
-                    _data.UpdateData(_URLs);
-                    EditorUtility.SetDirty(_data);
-                }
-
-                _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
-
-                GUI.color = Color.gray;
-                GUILayout.Box("", GUILayout.Height(2), GUILayout.ExpandWidth(true));
-                GUI.color = Color.white;
-
-                for(int i=0;i<_URLsProp.arraySize;i++)
+        private void URLsLabel()
+        {
+            for(int i=0;i<_URLsProp.arraySize;i++)
                 {
                     if(_URLs[i] != null)
                     {
@@ -123,12 +103,48 @@ namespace AyahaTools.OpenURLs
                             {
                                 System.Diagnostics.Process.Start(_URLs[i].URL);
                             }
-                            GUI.color = Color.gray;
-                            GUILayout.Box("", GUILayout.Height(2), GUILayout.ExpandWidth(true));
-                            GUI.color = Color.white;
+
+                            GUIPartition();
                         }
                     }
                 }
+        }
+
+        void OnGUI()
+        {
+            // EditorGUILayout.LabelField($"大きさ{position.size}");
+            Information();
+
+            GUIPartition();
+
+            if(GUILayout.Button("URLアセットを作成"))
+            {
+                _makeURLAsset = GetWindow<MakeURLAsset>();
+            }
+
+            GUIPartition();
+
+            using (new EditorGUILayout.VerticalScope("box"))
+            {
+                if(_data == null) _data = LoadData();
+                _URLs = _data._URLs;
+
+                EditorGUI.BeginChangeCheck();
+
+                SoInit();
+                EditorGUILayout.PropertyField(_URLsProp,true);
+
+                if(EditorGUI.EndChangeCheck())
+                {
+                    _data.UpdateData(_URLs);
+                    EditorUtility.SetDirty(_data);
+                }
+
+                _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
+                GUIPartition();
+
+                URLsLabel();
 
                 EditorGUILayout.EndScrollView();
             }
