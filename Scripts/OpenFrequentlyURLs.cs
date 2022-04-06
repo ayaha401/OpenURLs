@@ -121,26 +121,25 @@ namespace AyahaTools.OpenURLs
         {
             for(int i=0;i<_URLsProp.arraySize;i++)
             {
-                switch (_filterMode)
-                {
-                    case FilterMode.AssetName:
-                        _filterFlag = _URLs[i].name.Contains(_filter);
-                        break;
-                    case FilterMode.TitleName:
-                        _filterFlag = _URLs[i].URLHeaderName.Contains(_filter);
-                        break;
-                    case FilterMode.All:
-                        _filterFlag = _URLs[i].name.Contains(_filter) || _URLs[i].URLHeaderName.Contains(_filter);
-                        break;
-                }
-
                 if(_URLs[i] != null)
                 {
+                    switch (_filterMode)
+                    {
+                        case FilterMode.AssetName:
+                            _filterFlag = _URLs[i].name.Contains(_filter);
+                            break;
+                        case FilterMode.TitleName:
+                            _filterFlag = _URLs[i].URLHeaderName.Contains(_filter);
+                            break;
+                        case FilterMode.All:
+                            _filterFlag = _URLs[i].name.Contains(_filter) || _URLs[i].URLHeaderName.Contains(_filter);
+                            break;
+                    }
+
                     if(_filterFlag)
                     {
                         URLLabel(i);
                     }
-                    
                 }
             }
         }
