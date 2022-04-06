@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.1.0
+// OpenURLs         v.1.1.1
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -44,7 +44,7 @@ namespace AyahaTools.OpenURLs
 
                 if(GUILayout.Button("作成"))
                 {
-                    const string PATH = "Assets/Editer/AyahaTools/OpenFrequentlyURLs/SObj";
+                    const string PATH = "Assets/Editor/AyahaTools/OpenFrequentlyURLs/SObj";
                     URL_SObj newURL_SObj = ScriptableObject.CreateInstance<URL_SObj>();
                     string fileName = $"{_assetName}.asset";
                     newURL_SObj.URLHeaderName = _headerName;

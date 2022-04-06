@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.1.0
+// OpenURLs         v.1.1.1
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -27,6 +27,8 @@ namespace AyahaTools.OpenURLs
         private Vector2 _scrollPosition = Vector2.zero;
         private Vector2 _deleteButtonSize = new Vector2(18.0f,18.0f);
 
+        private string _version = "1.1.1";
+
         [MenuItem("AyahaTools/OpenURLs")]
         private static void OpenWindow()
         {
@@ -52,7 +54,7 @@ namespace AyahaTools.OpenURLs
                 using (new EditorGUILayout.HorizontalScope())
                 {
                     EditorGUILayout.LabelField("Version");
-                    EditorGUILayout.LabelField("Version 1.1.0");
+                    EditorGUILayout.LabelField("Version " + _version);
                 }
 
                 using (new EditorGUILayout.HorizontalScope())
@@ -149,25 +151,6 @@ namespace AyahaTools.OpenURLs
                     .Select(path => AssetDatabase.LoadAssetAtPath(path, typeof(OpenFrequentlyURLsSaveData)))
                     .Where(obj => obj != null)
                     .FirstOrDefault();
-        }
-
-        private Rect ShurikenUI(string title)
-        {
-            var style = new GUIStyle("ShurikenModuleTitle");
-            style.margin = new RectOffset(0, 0, 8, 0);
-            style.font = new GUIStyle(EditorStyles.boldLabel).font;
-            style.border = new RectOffset(15, 7, 4, 4);
-            style.fixedHeight = 22;
-            style.contentOffset = new Vector2(20f, -2f);
-            var rect = GUILayoutUtility.GetRect(16f, 22f, style);
-            GUI.Box(rect, title, style);
-
-            return rect;
-        }
-
-        public void Header(string title)
-        {
-            ShurikenUI(title);
         }
     }
 }
