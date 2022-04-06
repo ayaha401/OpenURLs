@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.2.2.0
+// OpenURLs         v.2.0.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -18,7 +18,7 @@ namespace AyahaTools.OpenURLs
 {
     public class OpenFrequentlyURLs : EditorWindow
     {
-        private string _version = "2.2.0";
+        private string _version = "2.0.0";
 
         private MakeURLAsset _makeURLAsset= null;
         [SerializeField] private OpenFrequentlyURLsSaveData _data = null;
