@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.2.0
+// OpenURLs         v.2.2.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -21,9 +21,12 @@ namespace AyahaTools.OpenURLs
         private string _headerName = null;
         private string _url = null;
 
+        private string _message = null;
+        private MessageType _messageType = MessageType.Info;
+
         public bool isOpen = false;
 
-        private Vector2 _startWindowSize = new Vector2(400.0f,180.0f);
+        private Vector2 _startWindowSize = new Vector2(400.0f,260.0f);
 
         void OnEnable()
         {
@@ -33,8 +36,37 @@ namespace AyahaTools.OpenURLs
             position = currentPosition;
         }
 
+        private void StringReplace(string str)
+        {
+            str.Replace(" ","").Replace("　","");
+        }
+
+        private void CheckAssetElements()
+        {
+            _message = null;
+            if(string.IsNullOrEmpty(_assetName))
+            {
+                _message = "AssetName is empty\n";
+            }
+            else
+            {
+                StringReplace(_assetName);
+            }
+
+            if(string.IsNullOrEmpty(_headerName))
+            {
+                _message += "HeaderName is empty\n";
+            }
+
+            if(string.IsNullOrEmpty(_url))
+            {
+                _message += "URL is empty";
+            }           
+        }
+
         void OnGUI()
         {
+            // EditorGUILayout.LabelField($"大きさ{position.size}");
             using (new EditorGUILayout.VerticalScope())
             {
                 EditorGUILayout.LabelField("アセット名");
@@ -48,6 +80,17 @@ namespace AyahaTools.OpenURLs
 
                 if(GUILayout.Button("作成"))
                 {
+                    CheckAssetElements();
+                    if(_message != null)
+                    {
+                        _messageType = MessageType.Error;
+                        return;
+                    }
+                    else
+                    {
+                        _messageType = MessageType.Info;
+                    }
+
                     const string PATH = "Assets/Editor/AyahaTools/OpenFrequentlyURLs/SObj";
                     URL_SObj newURL_SObj = ScriptableObject.CreateInstance<URL_SObj>();
                     string fileName = $"{_assetName}.asset";
@@ -59,6 +102,8 @@ namespace AyahaTools.OpenURLs
                     _url = null;
                     this.Close();
                 }
+
+                EditorGUILayout.HelpBox(_message, _messageType);
             }
         }
 

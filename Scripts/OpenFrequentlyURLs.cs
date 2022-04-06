@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.1.2.0
+// OpenURLs         v.2.2.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -12,12 +12,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using System;
 
 namespace AyahaTools.OpenURLs
 {
     public class OpenFrequentlyURLs : EditorWindow
     {
-        private string _version = "1.2.0";
+        private string _version = "2.2.0";
 
         private MakeURLAsset _makeURLAsset= null;
         [SerializeField] private OpenFrequentlyURLsSaveData _data = null;
@@ -25,6 +26,18 @@ namespace AyahaTools.OpenURLs
 
         private SerializedObject so;
         private SerializedProperty _URLsProp;
+
+        private string _filter = string.Empty;
+        private enum FilterMode
+        {
+            AssetName,
+            TitleName,
+            All,
+        }
+        private FilterMode _filterMode = FilterMode.AssetName;
+        private bool _filterFlag;
+        private int _filterModeIndex = 2;
+        private string[] _filterModeNames = {"AssetName", "TitleName", "All"};
 
         private Vector2 _scrollPosition = Vector2.zero;
         private Vector2 _deleteButtonSize = new Vector2(18.0f,18.0f);
@@ -81,33 +94,55 @@ namespace AyahaTools.OpenURLs
             }
         }
 
+        private void URLLabel(int indexNum)
+        {
+            using (new EditorGUILayout.VerticalScope())
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.LabelField(_URLs[indexNum].URLHeaderName);
+                    EditorGUILayout.Space();
+                    if(GUILayout.Button("X", GUILayout.Width(_deleteButtonSize.x), GUILayout.Height(_deleteButtonSize.y)))
+                    {
+                        _URLsProp.DeleteArrayElementAtIndex(indexNum);
+                    }
+                }
+                
+                if(GUILayout.Button("OpenURL"))
+                {
+                    System.Diagnostics.Process.Start(_URLs[indexNum].URL);
+                }
+
+                GUIPartition();
+            }
+        }
+
         private void URLsLabel()
         {
             for(int i=0;i<_URLsProp.arraySize;i++)
+            {
+                switch (_filterMode)
                 {
-                    if(_URLs[i] != null)
-                    {
-                        using (new EditorGUILayout.VerticalScope("box"))
-                        {
-                            using (new EditorGUILayout.HorizontalScope())
-                            {
-                                EditorGUILayout.LabelField(_URLs[i].URLHeaderName);
-                                EditorGUILayout.Space();
-                                if(GUILayout.Button("X", GUILayout.Width(_deleteButtonSize.x), GUILayout.Height(_deleteButtonSize.y)))
-                                {
-                                    _URLsProp.DeleteArrayElementAtIndex(i);
-                                }
-                            }
-                            
-                            if(GUILayout.Button("OpenURL"))
-                            {
-                                System.Diagnostics.Process.Start(_URLs[i].URL);
-                            }
-
-                            GUIPartition();
-                        }
-                    }
+                    case FilterMode.AssetName:
+                        _filterFlag = _URLs[i].name.Contains(_filter);
+                        break;
+                    case FilterMode.TitleName:
+                        _filterFlag = _URLs[i].URLHeaderName.Contains(_filter);
+                        break;
+                    case FilterMode.All:
+                        _filterFlag = _URLs[i].name.Contains(_filter) || _URLs[i].URLHeaderName.Contains(_filter);
+                        break;
                 }
+
+                if(_URLs[i] != null)
+                {
+                    if(_filterFlag)
+                    {
+                        URLLabel(i);
+                    }
+                    
+                }
+            }
         }
 
         void OnGUI()
@@ -142,6 +177,25 @@ namespace AyahaTools.OpenURLs
 
                 _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
+                GUIPartition();
+
+                using (new EditorGUILayout.VerticalScope())
+                {
+                    _filterModeIndex = GUILayout.Toolbar(_filterModeIndex, _filterModeNames);
+                    _filterMode = (FilterMode)Enum.ToObject(typeof(FilterMode), _filterModeIndex);
+                    
+
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField("Filter",GUILayout.Width(45));
+                        _filter = EditorGUILayout.TextField(_filter);
+                        if(GUILayout.Button("X", GUILayout.Width(_deleteButtonSize.x), GUILayout.Height(_deleteButtonSize.y)))
+                        {
+                            _filter = string.Empty;
+                        }
+                    }
+                }
+                
                 GUIPartition();
 
                 URLsLabel();
