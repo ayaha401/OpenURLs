@@ -1,5 +1,5 @@
 //====================================================================================================
-// OpenURLs         v.2.0.0
+// OpenURLs         v.2.1.0
 //
 // Copyright (C) 2022 ayaha401
 // Twitter : @ayaha__401
@@ -18,7 +18,7 @@ namespace AyahaTools.OpenURLs
 {
     public class OpenFrequentlyURLs : EditorWindow
     {
-        private string _version = "2.0.0";
+        private string _version = "2.1.0";
 
         private MakeURLAsset _makeURLAsset= null;
         [SerializeField] private OpenFrequentlyURLsSaveData _data = null;
@@ -119,7 +119,7 @@ namespace AyahaTools.OpenURLs
 
         private void URLsLabel()
         {
-            for(int i=0;i<_URLsProp.arraySize;i++)
+            for(int i = 0; i < _URLs.Count; i++)
             {
                 if(_URLs[i] != null)
                 {
@@ -139,6 +139,25 @@ namespace AyahaTools.OpenURLs
                     if(_filterFlag)
                     {
                         URLLabel(i);
+                    }
+                }
+            }
+        }
+
+        private void FilterArea()
+        {
+            using (new EditorGUILayout.VerticalScope())
+            {
+                _filterModeIndex = GUILayout.Toolbar(_filterModeIndex, _filterModeNames);
+                _filterMode = (FilterMode)Enum.ToObject(typeof(FilterMode), _filterModeIndex);
+                
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.LabelField("Filter",GUILayout.Width(45));
+                    _filter = EditorGUILayout.TextField(_filter);
+                    if(GUILayout.Button("X", GUILayout.Width(_deleteButtonSize.x), GUILayout.Height(_deleteButtonSize.y)))
+                    {
+                        _filter = string.Empty;
                     }
                 }
             }
@@ -175,30 +194,15 @@ namespace AyahaTools.OpenURLs
                 }
 
                 _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
-
-                GUIPartition();
-
-                using (new EditorGUILayout.VerticalScope())
                 {
-                    _filterModeIndex = GUILayout.Toolbar(_filterModeIndex, _filterModeNames);
-                    _filterMode = (FilterMode)Enum.ToObject(typeof(FilterMode), _filterModeIndex);
+                    GUIPartition();
+
+                    FilterArea();
                     
-
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        EditorGUILayout.LabelField("Filter",GUILayout.Width(45));
-                        _filter = EditorGUILayout.TextField(_filter);
-                        if(GUILayout.Button("X", GUILayout.Width(_deleteButtonSize.x), GUILayout.Height(_deleteButtonSize.y)))
-                        {
-                            _filter = string.Empty;
-                        }
-                    }
+                    GUIPartition();
+                    
+                    URLsLabel();
                 }
-                
-                GUIPartition();
-
-                URLsLabel();
-
                 EditorGUILayout.EndScrollView();
             }
             so.ApplyModifiedProperties();
